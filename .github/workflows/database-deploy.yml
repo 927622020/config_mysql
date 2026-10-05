@@ -1,4 +1,4 @@
-name: Validate SQL
+name: Deploy SQL
 
 on:
   push:
@@ -8,24 +8,33 @@ on:
       - "database/**/*.sql"
 
 jobs:
-  validate-sql:
-    runs-on: ubuntu-latest
+  deploy-sql:
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install MySQL client
+      - name: Check MySQL connection
         run: |
-          sudo apt-get update
-          sudo apt-get install -y mysql-client
+          mysql \
+            -h 127.0.0.1 \
+            -u jeeva \
+            -p"${{ secrets.DB_PASSWORD }}" \
+            config_mysql \
+            -e "SELECT 'MySQL connection successful' AS message;"
 
-      - name: Validate SQL files
+      - name: Deploy SQL files
         run: |
-          for file in database/**/*.sql; do
-            echo "Checking: $file"
-            mysql --help > /dev/null
+          find database -name "*.sql" -type f -print0 | while IFS= read -r -d '' file
+          do
+            echo "Deploying: $file"
+
+            mysql \
+              -h 127.0.0.1 \
+              -u jeeva \
+              -p"${{ secrets.DB_PASSWORD }}" \
+              config_mysql < "$file"
+
+            echo "Successfully deployed: $file"
           done
-
-          echo "SQL files found:"
-          find database -name "*.sql" -type f
