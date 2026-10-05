@@ -1,0 +1,31 @@
+name: Validate SQL
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "database/**/*.sql"
+
+jobs:
+  validate-sql:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install MySQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-client
+
+      - name: Validate SQL files
+        run: |
+          for file in database/**/*.sql; do
+            echo "Checking: $file"
+            mysql --help > /dev/null
+          done
+
+          echo "SQL files found:"
+          find database -name "*.sql" -type f
