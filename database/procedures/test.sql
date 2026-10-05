@@ -4,7 +4,7 @@ DELIMITER //
 
 CREATE PROCEDURE test_procedure()
 BEGIN
-    SELECT 'Hello from MySQL!' AS message;
+    SELECT 'Hello from MySQL - CI test!' AS message;
 END //
 
 DELIMITER ;
