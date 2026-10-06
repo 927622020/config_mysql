@@ -4,7 +4,7 @@ DELIMITER //
 
 CREATE PROCEDURE customer_procedure()
 BEGIN
-    SELECT 'Customer procedure working!' AS message;
+    SELECT 'Customer procedure working..!' AS message;
 END //
 
 DELIMITER ;
